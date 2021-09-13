@@ -1,5 +1,5 @@
 import AppLayout from "../components/AppLayout";
-import Head from "next";
+import Head from "next/head";
 import NicknameEditForm from "../components/NicknameEditForm";
 import FollowList from "../components/FollowList";
 
@@ -9,9 +9,9 @@ const Profile = () => {
 
     return(
         <>
-        {/* <Head>
+        <Head>
             <title>내 프로필 | sns</title>
-        </Head> */}
+        </Head>
         <AppLayout>
             <NicknameEditForm />
             <FollowList header = "팔로워 목록" data = {followerList} />

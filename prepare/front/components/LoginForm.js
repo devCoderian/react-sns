@@ -4,6 +4,7 @@ import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { useCallback } from "react";
+import useInput from '../hooks/useInput';
 
 const ButtonWrapper = styled.div`
     margin-top: 10px
@@ -14,19 +15,15 @@ padding: 10px
 // const style = useMemo(()=>({marginTop: 10}), []); -> 스타일 컴포넌트 대신 사용 
 
 const LoginForm = ({setIsLoggedIn}) => {
-    const [id, setId] = useState('');
-    const [password, setPassword] = useState('');
-
+    // const [id, setId] = useState('');
+    // const onChangeId = useCallback((e) => {
+    //     setId(e.target.value);
+    // },[]);
+    const [id, onChangeId] = useInput('');
+    const [password, onChangePassword] = useInput('');
  
  //컴포넌트의 함수로 넘겨주는 props는 useCallBack(함수캐싱) 꼭쓰기-> 최적화를 위해
-    
-    const onChangeId = useCallback((e) => {
-            setId(e.target.value);
-        },[]);
 
-    const onChangePassword = useCallback((e) => {
-        setPassword(e.target.value);
-    },[]);
     //submit이 완료되면 onFinish 가 호출됨 antd의 onFinish는 자동으로 e.preventDefault가 설정되어 있음
     const onSubmitForm = useCallback(() =>{
         // e.preventDefault antd에서 생략
@@ -66,7 +63,7 @@ const LoginForm = ({setIsLoggedIn}) => {
 }
 
 LoginForm.propTypes = {
-
+    setIsLoggedIn: PropTypes.func.isRequired,
 }
 
 export default LoginForm

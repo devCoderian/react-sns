@@ -5,7 +5,8 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import { useCallback } from "react";
 import useInput from '../hooks/useInput';
-
+import { useDispatch } from 'react-redux';
+import { loginAction } from '../reducers';
 const ButtonWrapper = styled.div`
     margin-top: 10px
 `;
@@ -14,22 +15,26 @@ padding: 10px
 `;
 // const style = useMemo(()=>({marginTop: 10}), []); -> 스타일 컴포넌트 대신 사용 
 
-const LoginForm = ({setIsLoggedIn}) => {
+const LoginForm = () => {
+
+    //props 필요 없음 redux const LoginForm = ({setIsLoggedIn}) 
+    const dispatch = useDispatch(); 
     // const [id, setId] = useState('');
     // const onChangeId = useCallback((e) => {
     //     setId(e.target.value);
     // },[]);
     const [id, onChangeId] = useInput('');
     const [password, onChangePassword] = useInput('');
- 
- //컴포넌트의 함수로 넘겨주는 props는 useCallBack(함수캐싱) 꼭쓰기-> 최적화를 위해
+  
+   //컴포넌트의 함수로 넘겨주는 props는 useCallBack(함수캐싱) 꼭쓰기-> 최적화를 위해
 
     //submit이 완료되면 onFinish 가 호출됨 antd의 onFinish는 자동으로 e.preventDefault가 설정되어 있음
     const onSubmitForm = useCallback(() =>{
         // e.preventDefault antd에서 생략
         // component에 넣는 거니까 useCallback으로 감싸기
         console.log(id, password);
-        setIsLoggedIn(true);
+        // setIsLoggedIn(true); props 받을 때
+        dispatch(loginAction({id,password}));
     }, [id, password]);
 
     return (

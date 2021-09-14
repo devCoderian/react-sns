@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 
 import wrapper from '../store/configureStore';
 
+
 const App =({Component}) =>{
     
     return(
+        // <Provider></Provider> 6버전 이상부터 생략
         <Component />
     )
 }

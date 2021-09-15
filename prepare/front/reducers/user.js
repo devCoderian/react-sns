@@ -1,6 +1,6 @@
 const dummyUser = {
     id: 1,
-    nickname: '제로초',
+    nickname: '정이안',
     Posts: [],
     Followings: [],
     Followers: [],
@@ -53,8 +53,7 @@ const dummyUser = {
         return {
           ...state,
           isLoggedIn: true,
-          me: dummyUser,
-          loginData: action.data,
+          me: action.data,
         };
       }
       case LOG_OUT: {

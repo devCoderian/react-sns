@@ -14,11 +14,6 @@ export const PostForm = () => {
       imageInput.current.click();
     }, [imageInput.current]);
   
-    useEffect(() => {
-      if (postAdded) {
-        setText('');
-      }
-    }, [postAdded]);
   
     const onChangeText = useCallback((e) => {
       setText(e.target.value);
@@ -26,6 +21,7 @@ export const PostForm = () => {
   
     const onSubmit = useCallback(() => {
       dispatch(addPost);
+      setText('');
     }, []);
     return (
         <Form style={{ margin: '10px 0 20px' }} encType="multipart/form-data" onFinish={onSubmit}>

@@ -7,7 +7,8 @@ export const initialState = {
       },
       content: '첫 번째 게시글',
       Images: [{
-        src: 'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726',
+        // src: 'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726',
+        src:'https://user-images.githubusercontent.com/87194565/133585873-7ac6d6f5-a7d0-4272-8d67-c022c83c53cf.jpg',
       }, {
         src: 'https://gimg.gilbut.co.kr/book/BN001958/rn_view_BN001958.jpg',
       }, {
@@ -15,14 +16,14 @@ export const initialState = {
       }],
       Comments: [{
         User: {
-          nickname: 'nero',
+          nickname: 'ian',
         },
-        content: '우와 개정판이 나왔군요~',
+        content: 'ㄱㅇㅇ',
       }, {
         User: {
-          nickname: 'hero',
+          nickname: 'jungian',
         },
-        content: '얼른 사고싶어요~',
+        content: '귀여워...',
       }]
     }],
     imagePaths: [],

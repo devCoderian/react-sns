@@ -30,10 +30,13 @@ export const initialState = {
     postAdded: false,
   };
   
-  const ADD_POST = 'ADD_POST';
+  const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
+  const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
+  const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
   
-  export const addPost = {
-    type: ADD_POST,
+  export const addPost = (data) => {
+    type: ADD_POST_REQUEST,
+    data
   };
   
   const dummyPost = {

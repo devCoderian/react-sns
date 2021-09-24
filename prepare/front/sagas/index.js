@@ -1,4 +1,4 @@
-import { all, fork } from 'redux-saga/effects'
+import { all, fork, takeEvery, takeLatest, throttle, delay } from 'redux-saga/effects'
 import axios from 'axios'
 function loginAPI(){
     return axios.post('/api/login')
@@ -6,7 +6,10 @@ function loginAPI(){
 
 function* login(action){
     try{
-        const result = yield call(loginAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
+        //서버가 없기 때문
+        yield delay(1000)
+        //const result = yield call(loginAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
+        //dispatch
         yield put({
             type: 'LOG_IN_SUCCESS',
             data: result.data
@@ -24,8 +27,11 @@ function logoutAPI(){
 }
 
 function* login(action){
+    
     try{
-        const result = yield call(logoutAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
+         //서버가 없기 때문
+        yield delay(1000)
+        //const result = yield call(logoutAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         yield put({
             type: 'LOG_OUT_SUCCESS',
             data: result.data
@@ -44,7 +50,9 @@ function addPostAPI(data){
 
 function* addPost(action){
     try{
-        const result = yield call(addPostAPI,action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
+         //서버가 없기 때문
+        yield delay(1000)
+        //const result = yield call(addPostAPI,action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         yield put({
             type: 'ADD_POST_SUCCESS',
             data: result.data
@@ -56,15 +64,22 @@ function* addPost(action){
         })
     }
 }
-//이벤트 리스너 같은 역할을 한다.
+//이벤트 리스너 같은 역할을 한다. 단점 1회용 -> 해결하기 ->while
 function* watchLogin(){
-    yield take('LOG_IN_REQUEST', login) //login이라는 액션이 실행될 때까지 기다리겠다. LOG_IN_REQUEST 액션이 실행되면 login 함수 실행
+    while(true){
+        yield take('LOG_IN_REQUEST', login) //login이라는 액션이 실행될 때까지 기다리겠다. LOG_IN_REQUEST 액션이 실행되면 login 함수 실행
+    }
+    // yield takeEvery('LOG_IN_REQUEST', login) -> 보통 이걸쓴다.
 }
 function* watchLogout(){
-    yield take('LOG_OUT_REQUEST')
+    
+        yield takeEvery('LOG_OUT_REQUEST') //takeLatest 써야함 
+    
 }
 function* watchAddPost(){
-    yield take('ADD_POST_REQUEST')
+    
+        yield takeLatest('ADD_POST_REQUEST') //주번 , 백번 잘못 눌러도 마지막것만 //동시에 로딩되는 것 중에서만 프론트에서 그렇게 생각한다. 서버에는 두번 저장된다 응답을 취소하는 것
+        //yield throttle('ADD_POST_REQUEST' , addPost, 10000); //1분동안 한번만 요청! 중복요청 불가
 }
 export default function* rootSaga(){
     yield all([

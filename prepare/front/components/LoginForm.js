@@ -5,8 +5,9 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import { useCallback } from "react";
 import useInput from '../hooks/useInput';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from '../reducers/user';
+import { loginRequestAction } from '../reducers/user';
 const ButtonWrapper = styled.div`
     margin-top: 10px
 `;
@@ -16,7 +17,7 @@ padding: 10px
 // const style = useMemo(()=>({marginTop: 10}), []); -> 스타일 컴포넌트 대신 사용 
 
 const LoginForm = () => {
-
+    const { isLoggingIn } = useSelector((state) => state.user); 
     //props 필요 없음 redux const LoginForm = ({setIsLoggedIn}) 
     const dispatch = useDispatch(); 
     // const [id, setId] = useState('');
@@ -34,7 +35,8 @@ const LoginForm = () => {
         // component에 넣는 거니까 useCallback으로 감싸기
         console.log(id, password);
         // setIsLoggedIn(true); props 받을 때
-        dispatch(loginAction({id,password}));
+        // dispatch(loginAction({id,password})); saga전
+        dispatch(loginRequestAction({id,password}))
     }, [id, password]);
 
     return (
@@ -59,7 +61,7 @@ const LoginForm = () => {
               <ButtonWrapper>
                 {/* <div style = {style}> 이렇게하면 useMemo 사용*/}
                 {/* <div style = {{marginTop : 10}}> 이렇게하면 {} === {} false로 달라진게 없는데 리렌더링 됨*/}
-                  <Button type = "primary" htmlType = "submit" loading = {false}>로그인</Button>
+                  <Button type = "primary" htmlType = "submit" loading = {isLoggingIn}>로그인</Button>
                   <Link href = "/signup"><a><Button>회원가입</Button></a></Link>
               </ButtonWrapper>
           </FormWrapper>  

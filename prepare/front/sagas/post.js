@@ -1,4 +1,4 @@
-import { delay, put, takeLatest } from "@redux-saga/core/effects";
+import { delay, put, takeLatest, fork, all} from "@redux-saga/core/effects";
 import axios from "axios";
 function addPostAPI(data){
     return axios.post('/api/post', data)
@@ -11,7 +11,7 @@ function* addPost(action){
         //const result = yield call(addPostAPI,action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         yield put({
             type: 'ADD_POST_SUCCESS',
-            data: result.data
+            data: action.data
         });
     }catch(err){
         yield put({

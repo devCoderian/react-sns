@@ -7,7 +7,9 @@ const dummyUser = {
   };
   
   export const initialState = {
+    isLoggingIn: false, //로그인 시도중
     isLoggedIn: false,
+    isLoggingOut: false, //로그아웃 시도중
     me: null,
     signUpData: {},
     loginData: {},
@@ -46,21 +48,50 @@ const dummyUser = {
       data,
     }
   };
-  
+ 
   export default (state = initialState, action) => {
     switch (action.type) {
-      case LOG_IN: {
+      case 'LOG_IN_REQUEST': {
         return {
           ...state,
-          isLoggedIn: true,
+          isLoggingIn: true,
           me: action.data,
         };
       }
-      case LOG_OUT: {
+      case 'LOG_IN_SUCCESS': {
+        return {
+          ...state,
+          isLoggedIn: true,
+          isLoggingIn: false,
+          me: action.data,
+        };
+      }
+      case 'LOG_IN_FAILURE': {
         return {
           ...state,
           isLoggedIn: false,
+          isLoggingIn: false,
+        };
+      }
+      case 'LOG_OUT_REQUEST': {
+        return {
+          ...state,
+          isLoggingOut: true,
           me: null,
+        };
+      }
+      case 'LOG_OUT_SUCCEESS': {
+        return {
+          ...state,
+          isLoggingOut: false,
+          isLoggingIn: false,
+          me: null,
+        };
+      }
+      case 'LOG_OUT_FAILURE': {
+        return {
+          ...state,
+          isLoggingOut: false,
         };
       }
       case SIGN_UP: {
@@ -75,4 +106,36 @@ const dummyUser = {
         }
       }
     }
-  };
+  }; 
+
+
+  // 사가 적용 전
+  // export default (state = initialState, action) => {
+  //   switch (action.type) {
+  //     case LOG_IN: {
+  //       return {
+  //         ...state,
+  //         isLoggedIn: true,
+  //         me: action.data,
+  //       };
+  //     }
+  //     case LOG_OUT: {
+  //       return {
+  //         ...state,
+  //         isLoggedIn: false,
+  //         me: null,
+  //       };
+  //     }
+  //     case SIGN_UP: {
+  //       return {
+  //         ...state,
+  //         signUpData: action.data,
+  //       };
+  //     }
+  //     default: {
+  //       return {
+  //         ...state,
+  //       }
+  //     }
+  //   }
+  // };

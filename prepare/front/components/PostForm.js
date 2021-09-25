@@ -34,7 +34,7 @@ export const PostForm = () => {
       type: ADD_POST_REQUEST,
       data: text,
     });
-    // dispatch(addPostRequestAction(text));
+    dispatch(addPost(text));
     // // setText('') 따로 빼기
   }, [text]);
   return (

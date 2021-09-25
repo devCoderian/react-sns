@@ -8,20 +8,26 @@ export const initialState = {
       },
       content: '첫 번째 게시글 #해시태그 #테스트 #안녕',
       Images: [{
+        id: shortId.generate(), 
         // src: 'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726',
         src:'https://user-images.githubusercontent.com/87194565/133585873-7ac6d6f5-a7d0-4272-8d67-c022c83c53cf.jpg',
       }, {
+        id: shortId.generate(), 
         src: 'https://gimg.gilbut.co.kr/book/BN001958/rn_view_BN001958.jpg',
       }, {
+        id: shortId.generate(), 
         src: 'https://gimg.gilbut.co.kr/book/BN001998/rn_view_BN001998.jpg',
       }],
       Comments: [{
+        id: shortId.generate(), 
         User: {
+          id: shortId.generate(),
           nickname: 'ian',
         },
         content: 'ㄱㅇㅇ',
       }, {
         User: {
+          id: shortId.generate(),
           nickname: 'jungian',
         },
         content: '귀여워...',
@@ -37,8 +43,9 @@ export const initialState = {
   };
     
   const dummyPost = (data) => ({
-    id: shortId.generate(),
-    content: data,
+    // id: shortId.generate(),
+    id:data.id, //사가에서 만들어 보내줌
+    content: data.content,
     User: {
       id: 1,
       nickname: '정이안',
@@ -52,7 +59,7 @@ export const initialState = {
     content: data,
     User:{
       id:1,
-      nickname: '제로초'
+      nickname: '이안'
     }
   });
   

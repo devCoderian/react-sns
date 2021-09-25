@@ -2,9 +2,9 @@ const dummyUser =(data) => ({
     ...data,
     id: 1,
     nickname: '정이안',
-    Posts: [],
-    Followings: [],
-    Followers: [],
+    Posts: [{id: 1}],
+    Followings: [{nickname: 'dksfh'}, {nickname: 'ddsfh'}, {nickname: 'dssksfh'}],
+    Followers: [{nickname: 'dksfh'}, {nickname: 'ddsfh'}, {nickname: 'dssksfh'}],
   });
   
   export const initialState = {
@@ -53,8 +53,10 @@ const dummyUser =(data) => ({
   export const CHANGE_NICKNAME_SUCCESS = 'CHANGE_NICKNAME_SUCCESS';
   export const CHANGE_NICKNAME_FAILURE = 'CHANGE_NICKNAME_FAILURE';
 
-  export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
-  export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
+  // 게시글 데이터 등록 삭제는 post 리듀서에서만 변경 가능하기 때문에
+  //추가 액션 필요 -> 포스트 사가에서 유저 액션 호출 가능
+  export const ADD_POST_TO_ME = 'ADD_POST_TO_ME'; //내 게시글 추가 액션
+  export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME'; // 내 게시글 삭제 액션
 
   export const signupRequestAction = (data) =>({
     type: SIGN_UP_REQUEST,

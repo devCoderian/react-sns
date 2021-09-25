@@ -1,15 +1,28 @@
-const dummyUser = {
+const dummyUser =(data) => ({
+    ...data,
     id: 1,
     nickname: '정이안',
     Posts: [],
     Followings: [],
     Followers: [],
-  };
+  });
   
   export const initialState = {
-    isLoggingIn: false, //로그인 시도중
-    isLoggedIn: false,
-    isLoggingOut: false, //로그아웃 시도중
+    loginLoading: false, //로그인 시도중
+    loginDone: false, //로그아웃 시도중
+    loginError: false,
+   
+    logoutLoading: false, //로그인 시도중
+    logoutDone: false,
+    logoutError: false, //로그아웃 시도중
+
+    signupLoading: false, //로그인 시도중
+    signupDone: false,
+    signupError: false, //로그아웃 시도중
+
+    changeNicknameLoading: false, // 닉네임 변경 시도중
+    changeNicknameDone: false,
+    changeNicknameError: null,
     me: null,
     signUpData: {},
     loginData: {},
@@ -27,31 +40,26 @@ const dummyUser = {
   export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
   export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
 
-  export const FOLLOW_REQUEST = 'SIGN_UP_REQUEST';
-  export const FOLLOW_SUCCESS = 'SIGN_UP_SUCCESS';
-  export const FOLLOW_FAILURE = 'SIGN_UP_FAILURE';
+  export const FOLLOW_REQUEST = 'FOLLOW_REQUEST';
+  export const FOLLOW_SUCCESS = 'FOLLOW_SUCCESS';
+  export const FOLLOW_FAILURE = 'FOLLOW_FAILURE';
 
   export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
   export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
   export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
-  
-  export const signUp = (data) => {
-    return {
-      type: SIGN_UP,
-      data,
-    }
-  };
 
-  export const signUpAction = (data) => {
-    return {
-      type: SIGN_UP_REQUEST,
-      data,
-    };
-  };
   
-  export const signUpSuccess = {
-    type: SIGN_UP_SUCCESS,
-  };
+  export const CHANGE_NICKNAME_REQUEST = 'CHANGE_NICKNAME_REQUEST';
+  export const CHANGE_NICKNAME_SUCCESS = 'CHANGE_NICKNAME_SUCCESS';
+  export const CHANGE_NICKNAME_FAILURE = 'CHANGE_NICKNAME_FAILURE';
+
+  export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
+  export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
+
+  export const signupRequestAction = (data) =>({
+    type: SIGN_UP_REQUEST,
+    data,
+  })
 
   export const loginRequestAction = (data) => ({
     type: LOG_IN_REQUEST,
@@ -69,53 +77,104 @@ const dummyUser = {
         console.log('reducer login')
         return {
           ...state,
-          isLoggingIn: true,
-          isLoggedIn: false,
+          loginLoading: true,
+          loginError: null,
+          loginDone: false
         };
       }
       case LOG_IN_SUCCESS: {
         return {
           ...state,
-          isLoggingIn: false,
-          isLoggedIn: true,
-          
-          me: {...action.data, nickname: 'ian'}
+          loginLoading: false,
+          loginDone: true,
+          me: dummyUser(action.data)
         };
       }
       case LOG_IN_FAILURE: {
         return {
           ...state,
-          isLoggedIn: false,
-          isLoggingIn: false,
+          loginLoading: false,
+          loginError: action.error,
         };
       }
       case LOG_OUT_REQUEST: {
         return {
           ...state,
-          isLoggingOut: true,
-          me: null,
+          logoutLoading: true,
+          logoutDone: false,
+          logoutError: null,
         };
       }
       case LOG_OUT_SUCCESS: {
         return {
           ...state,
-          isLoggingOut: false,
-          isLoggedIn: false,
-          me: null,
+          logoutLoading: false,
+          logoutDone: true,
+          me: null
         };
       }
       case LOG_OUT_FAILURE: {
         return {
           ...state,
-          isLoggingOut: false,
+          logoutLoading: false,
+          logoutError: action.error,
         };
       }
-      case SIGN_UP: {
+      case SIGN_UP_REQUEST: {
         return {
           ...state,
-          signUpData: action.data,
+          signupLoading: true,
+          signupDone: false,
+          signupError: null,
         };
       }
+      case SIGN_UP_SUCCESS: {
+        return {
+          ...state,
+          signupLoading: false,
+          signupDone: true,
+        };
+      }
+      case SIGN_UP_FAILURE: {
+        return {
+          ...state,
+          signupLoading: false,
+          signupError: action.error,
+        };
+      }
+      case CHANGE_NICKNAME_REQUEST:
+        // draft.changeNicknameLoading = true;
+        // draft.changeNicknameError = null;
+        // draft.changeNicknameDone = false;
+        break;
+      case CHANGE_NICKNAME_SUCCESS:
+        // draft.changeNicknameLoading = false;
+        // draft.changeNicknameDone = true;
+        break;
+      case CHANGE_NICKNAME_FAILURE:
+        // draft.changeNicknameLoading = false;
+        // draft.changeNicknameError = action.error;
+        break;
+      case ADD_POST_TO_ME:
+        // draft.me.Posts.unshift({ id: action.data });
+        break;
+        // return {
+        //   ...state,
+        //   me: {
+        //     ...state.me,
+        //     Posts: [{ id: action.data }, ...state.me.Posts],
+        //   },
+        // };
+      case REMOVE_POST_OF_ME:
+        // draft.me.Posts = draft.me.Posts.filter((v) => v.id !== action.data);
+        break;
+        // return {
+        //   ...state,
+        //   me: {
+        //     ...state.me,
+        //     Posts: state.me.Posts.filter((v) => v.id !== action.data),
+        //   },
+        // };
       default: {
         return {
           ...state,
@@ -134,6 +193,22 @@ const dummyUser = {
   // };
   // export const logoutAction = {
   //   type: LOG_OUT,
+  // };
+
+
+  
+  // export const signUp = (data) => {
+  //   return {
+  //     type: SIGN_UP_REQUEST,
+  //     data,
+  //   }
+  // };
+
+  // export const signUpAction = (data) => {
+  //   return {
+  //     type: SIGN_UP_REQUEST,
+  //     data,
+  //   };
   // };
 
   // export default (state = initialState, action) => {

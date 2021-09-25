@@ -30,7 +30,7 @@ const Global = createGlobalStyle`
 
 const AppLayout = ({children}) => {
     // const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const {isLoggedIn}  =  useSelector((state) => state.user);
+    const {me}  =  useSelector((state) => state.user);
     return (
         <div>
             <Menu mode = "horizontal">
@@ -51,7 +51,7 @@ const AppLayout = ({children}) => {
             <Row gutter={8}>
                 <Col xs ={24} md = {6}>
                     {/* 리덕스로 전역으로 바꿈 props 필요 x{isLoggedIn? <UserProfile setIsLoggedIn={setIsLoggedIn}/>: <LoginForm setIsLoggedIn={setIsLoggedIn}/>} */}
-                    {isLoggedIn? <UserProfile/>: <LoginForm />}
+                    {me? <UserProfile/>: <LoginForm />}
                 </Col>
                 <Col xs ={24} md = {12}>
                     {children}

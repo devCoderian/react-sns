@@ -17,14 +17,14 @@ padding: 10px
 // const style = useMemo(()=>({marginTop: 10}), []); -> 스타일 컴포넌트 대신 사용 
 
 const LoginForm = () => {
-    const { isLoggingIn } = useSelector((state) => state.user); 
+    const { loginLoading } = useSelector((state) => state.user);
     //props 필요 없음 redux const LoginForm = ({setIsLoggedIn}) 
     const dispatch = useDispatch(); 
     // const [id, setId] = useState('');
     // const onChangeId = useCallback((e) => {
     //     setId(e.target.value);
     // },[]);
-    const [id, onChangeId] = useInput('');
+    const [email, onChangeEmail] = useInput('');
     const [password, onChangePassword] = useInput('');
   
    //컴포넌트의 함수로 넘겨주는 props는 useCallBack(함수캐싱) 꼭쓰기-> 최적화를 위해
@@ -33,19 +33,19 @@ const LoginForm = () => {
     const onSubmitForm = useCallback(() =>{
         // e.preventDefault antd에서 생략
         // component에 넣는 거니까 useCallback으로 감싸기
-        console.log(id, password);
+        console.log(email, password);
         // setIsLoggedIn(true); props 받을 때
         // dispatch(loginAction({id,password})); saga전
-        dispatch(loginRequestAction({id,password}))
-    }, [id, password]);
+        dispatch(loginRequestAction({email,password}))
+    }, [email, password]);
 
     return (
         <>
           <FormWrapper onFinish = {onSubmitForm}>
               <div>
-                  <label htmlFor = "user-id">아이디</label>
+                  <label htmlFor = "user-id">이메일</label>
                   <br />
-                  <Input name = "userId" value = {id} onChange = {onChangeId} required />
+                  <Input name = "userId" value = {email} onChange = {onChangeEmail} required />
               </div>
               <div>
                   <label htmlFor = "user-password">비밀번호</label>
@@ -61,7 +61,7 @@ const LoginForm = () => {
               <ButtonWrapper>
                 {/* <div style = {style}> 이렇게하면 useMemo 사용*/}
                 {/* <div style = {{marginTop : 10}}> 이렇게하면 {} === {} false로 달라진게 없는데 리렌더링 됨*/}
-                  <Button type = "primary" htmlType = "submit" loading = {isLoggingIn}>로그인</Button>
+                  <Button type = "primary" htmlType = "submit" loading = {loginLoading}>로그인</Button>
                   <Link href = "/signup"><a><Button>회원가입</Button></a></Link>
               </ButtonWrapper>
           </FormWrapper>  
@@ -70,7 +70,7 @@ const LoginForm = () => {
 }
 
 LoginForm.propTypes = {
-    setIsLoggedIn: PropTypes.func.isRequired,
+    // setIsLoggedIn: PropTypes.func.isRequired,
 }
 
 export default LoginForm

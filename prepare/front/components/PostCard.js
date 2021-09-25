@@ -16,8 +16,10 @@ const PostCard = ({post}) => {
     // const id = me?.id;
     const [liked, setLiked] = useState(false);
     const [commentFormOpened, setCommentFormOpened ] = useState(false);
-    const id = useSelector((state) => state.user.me?.id);
-    console.log('id',id);
+    // const id = useSelector((state) => state.user.me?.id);
+    // console.log('id',id);
+    const { me } = useSelector((state) => state.user);
+    const id = me && me.id;
     const onToggleLike = useCallback(() => {
             setLiked((prev) => !prev);
             // setLiked((prev) => !prev); -> false는 true로 true는 false

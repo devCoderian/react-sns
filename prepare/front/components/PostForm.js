@@ -8,13 +8,12 @@ import useInput from '../hooks/useInput';
 import { addPost } from '../sagas/post'
 
 export const PostForm = () => {
-    const { imagePaths, postAdded } = useSelector((state) => state.post);
+    const { imagePaths, addPostLoading, addPostDone } = useSelector((state) => state.post);
     // const [text, setText] = useState('');
     // useInput으로 변경
     const [text, onChangeText, setText] = useInput('');
     const dispatch = useDispatch();
     const imageInput = useRef();
-    const { addPostDone } = useSelector((state) => state.post);  
   useEffect(() => {
     if (addPostDone) {
       setText(''); // 따로 안만들면 서브밋하고 서버 오류날때 쓰던 글 지워짐
@@ -34,7 +33,7 @@ export const PostForm = () => {
       type: ADD_POST_REQUEST,
       data: text,
     });
-    dispatch(addPost(text));
+    // dispatch(addPost(text));
     // // setText('') 따로 빼기
   }, [text]);
   return (
@@ -43,7 +42,7 @@ export const PostForm = () => {
       <div>
         <input type="file" multiple hidden ref={imageInput} />
         <Button onClick={onClickImageUpload}>이미지 업로드</Button>
-        <Button type="primary" style={{ float: 'right' }} htmlType="submit">업로드</Button>
+        <Button type="primary" style={{ float: 'right' }} htmlType="submit" loading={addPostLoading}>업로드</Button>
       </div>
       <div>
         {imagePaths.map((v) => (

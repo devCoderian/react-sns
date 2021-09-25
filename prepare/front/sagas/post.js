@@ -14,9 +14,11 @@ function addPostAPI(data){
 function* addPost(action){
     try{
          //서버가 없기 때문
-        yield delay(1000)
+        // yield delay(1000)
         //const result = yield call(addPostAPI,action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         const id = shortId.generate();
+        console.log(id,'id');
+        console.log(action,'action');
         yield put({
             type: ADD_POST_SUCCESS,
             data: {
@@ -32,7 +34,7 @@ function* addPost(action){
     }catch(err){
         yield put({
             type: ADD_POST_FAILURE,
-            error: err.response.data,
+            error: err
         })
     }
 }

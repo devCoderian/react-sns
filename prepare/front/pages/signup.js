@@ -1,7 +1,8 @@
 import AppLayout from "../components/AppLayout";
 import Head from "next/head";
 import { Form, Input, Checkbox, Button} from 'antd';
-import { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
+import Router from 'next/router';
 import useInput from "../hooks/useInput";
 import styled from "styled-components";
 import { SIGN_UP_REQUEST } from "../reducers/user";
@@ -14,8 +15,21 @@ const ErrorMessage = styled.div`
 const Signup = () => {
 
     const dispacth = useDispatch();
-    const { signupLoading } = useSelector((state) => state.user);
+    const { signupLoading, signUpDone, signUpError} = useSelector((state) => state.user);
     
+    useEffect(() => {
+        if(signUpDone){
+            Router.push('/')
+        }
+    }, [signUpDone]);
+
+    useEffect(() => {
+        if(signUpError){
+            alert(signUpError);
+        }
+    }, [signUpDone])
+
+
     const [email, onChangeEmail] = useInput('');
     const [nickname, onChangeNickname] = useInput('');
     const [password, onChangePassword] = useInput('');
@@ -51,7 +65,6 @@ const Signup = () => {
 
     return(
         <>
-        
         <AppLayout>
             <Head>
                 <title>회원가입 | sns</title>

@@ -10,7 +10,9 @@ const Hashtag = sequelize.define( 'Hashtag', {// MySQL에는 Hashtags 테이블 
         collate: 'utf8mb4_general_ci' //mysql 한글 emoticon 저장 저장
     });
  Hashtag.associate = (db) => {
-    db.Hashtag.belongsToMany(db.Post, {through: 'PostHashtag'}); 
+     //해시태그는 여러개의 포스트를 가질수 있고 게시글도 여러개의 해시태그를 가질 수 있다.
+    // 다대다
+     db.Hashtag.belongsToMany(db.Post, {through: 'PostHashtag'}); 
  };
 
     return Hashtag;

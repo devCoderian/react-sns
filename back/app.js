@@ -1,8 +1,15 @@
 // -> app.js service 본체
 const express = require('express');
 const postRouter = require('./routes/post')
+const userRouter = require('./routes/user')
 const db = require ('./models'); //index에서 가져오기
 const app = express(); //한번 호출해주어야 한다.
+const cors = require('cors');
+
+const passportConfig = require('./passport')
+
+
+//express에 디비 등록
 db.sequelize.sync()
 .then(()=>{
     // 서버 실행할 때 디비 시퀄라이즈도 같이된다.
@@ -22,34 +29,35 @@ db.sequelize.sync()
 //라우터 부터 먼저 req.body 넣어줌
 //use안에 들어가는 애들을 미들웨어라 한다. 
 
-app.use(cors({
-    origin: '*',
-    credentials: false
-}));
+
+passportConfig();
+
+// app.use(cors({
+//     origin: '*',
+//     credentials: false
+// }));
 //실무에서는  credentials: true
 // app.use(cors({
 //     origin: 'https://nodebird.com' //진짜 주소만 허용하겠다. 
 // }));
 //브라우저에서 벡엔드로 직접 요청 날릴떄 cors로 다 허용해버리면 위험하니까(보안)
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }));
 
-app.use(express.json()); 
-app.use(express.urlencoded({ extended : true })) //form submit 했을 때 해석해줌
 
-app.get('/', (req,res)=>{
-    res.send('hello express!')
-});
 
-app.get('/posts', (req,res)=>{
-    res.json([
-        {id: 1, content: 'hello'},
-        {id: 2, content: 'hello'},
-        {id: 3, content: 'hello'}
-    ]) //데이터는 보통 json으로 표현한다. jsom객체를 응답
-});
+
+//use는 express 서버에 무언가를 장착하는 것
+app.use(express.json());  //프론트에서 json형식으로 보냈을 때 json형식의 데이터를 req.body안에 넣어준다.
+app.use(express.urlencoded({ extended : true })) //form submit 했을 때 url.encoded 방식으로 데이터가 넘어온다. 해석해줌
+
 
 app.use('post', postRouter);
+app.use('/user', userRouter);
 
-app.listen(3065, () =>{
+app.listen(3060, () =>{
     console.log('서버 실행중 ')
 });
 

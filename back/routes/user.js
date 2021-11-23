@@ -1,11 +1,44 @@
 const express = require('express');
 const bcrypt = require('bcrypt')
-const { User } = require('../medels'); 
-const cors = require('cors');
+const { User } = require('../models'); 
 
 const router = express.Router();
+const passport = require('passport');
+
+/*
+router.post('/login', passport.authenticate('local',(err, user, info)=>{
+    if(err){
+        console.error(err);
+        //next(err);
+    }
+    //이렇게 할 경우 req, res, next 못쓴다.
+    //미들웨어 확장하기 ->
+}));
+*/
+ //미들웨어 확장하기 -> express의 기법중 하나임
+router.post('/login', (req, res, next) =>{
+    passport.authenticate('local',(err, user, info)=>{
+        if(err){
+            console.error(err);
+            return next(err);
+        }
+        if(info){
+            return res.status(401).send(info.reason);
+        }
+        return req.login(user, async(loginErr)=>{
+            //패스포트 에러
+            console.error(loginErr)
+            if(loginErr){
+                return next(loginErr);
+            }
+            return res.json(user);
+        })
+    })(req, res, next);
+});
+
 
 router.post('/', async(req, res, next) =>{  //post  /user
+    //req -> saga -> signUp API 에서 들어온것
     //POST / user /saga에서 siginupApi를 통해 들어온다.
     // 비동기 -> bcrypt -> 비동기처리 -> 숫자가 높으면 암호화 보안이 높아짐 단 속도가 낮아짐
     try{
@@ -25,6 +58,7 @@ router.post('/', async(req, res, next) =>{  //post  /user
         }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 12)
+    //create 테이블안에 데이터를 넣는것
     await User.create({
         email:req.body.email,
         nickname: req.body.nickname,

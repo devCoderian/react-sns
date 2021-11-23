@@ -1,4 +1,4 @@
-import { all, delay, put, take, takeLatest, takeEvery, fork} from "@redux-saga/core/effects";
+import { all, delay, put, take, takeLatest, takeEvery, fork , call} from "@redux-saga/core/effects";
 import axios from "axios";
 import {
     LOG_IN_REQUEST,LOG_IN_SUCCESS,LOG_IN_FAILURE,
@@ -6,18 +6,15 @@ import {
     SIGN_UP_REQUEST,SIGN_UP_SUCCESS, SIGN_UP_FAILURE
  
   } from '../reducers/user';
-function loginAPI(){
-    return axios.post('/api/login')
+function loginAPI(data){
+    return axios.post('/user/login', data);
 }
-
-
-
 function* login(action){
     console.log('saga login function')
     try{
         //서버가 없기 때문
         yield delay(1000);
-        //const result = yield call(loginAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
+        const result = yield call(loginAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         //dispatch
         yield put({
             type: LOG_IN_SUCCESS,
@@ -32,7 +29,7 @@ function* login(action){
 }
 
 function logoutAPI(){
-    return axios.post('/api/logout')
+    return axios.post('/user/logout')
 }
 
 function* logout(){
@@ -52,15 +49,18 @@ function* logout(){
     }
 }
 
-function signupAPI(){
-    return axios.post('/api/logout')
+function signupAPI(data){
+    //return axios.post('http://localhost:3060/user', data);
+    //return axios.post('/user', data);
+    return axios.post('/user', data)
 }
 
-function* signup(){
+function* signup(action){
     
     try{
          //서버가 없기 때문
-        yield delay(1000);
+        //yield delay(1000);
+        const result = yield call(signupAPI, action.data);
         //const result = yield call(logoutAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         yield put({
             type: SIGN_UP_SUCCESS,
@@ -85,8 +85,10 @@ function* watchLogout(){
         yield takeEvery(LOG_OUT_REQUEST, logout) //takeLatest 써야함 
     
 }
+
 function* watchSignup(){
-    yield takeLatest(SIGN_UP_REQUEST, signup);
+    yield takeEvery(SIGN_UP_REQUEST, signup);
+    // yield takeLatest('SIGN_UP_REQUEST', signup);
 }
 
 

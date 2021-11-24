@@ -1,4 +1,4 @@
-import { all, delay, put, take, takeLatest, takeEvery, fork , call} from "@redux-saga/core/effects";
+import { all, delay, put, take, takeLatest, takeEvery, fork , call} from "redux-saga/effects";
 import axios from "axios";
 import {
     LOG_IN_REQUEST,LOG_IN_SUCCESS,LOG_IN_FAILURE,
@@ -12,13 +12,12 @@ function loginAPI(data){
 function* login(action){
     console.log('saga login function')
     try{
-        //서버가 없기 때문
-        yield delay(1000);
         const result = yield call(loginAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         //dispatch
+        console.log(result)
         yield put({
             type: LOG_IN_SUCCESS,
-            data: action.data
+            data: result.data
         });
     }catch(err){
         yield put({
@@ -36,8 +35,8 @@ function* logout(){
     
     try{
          //서버가 없기 때문
-        yield delay(1000);
-        //const result = yield call(logoutAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
+        //yield delay(1000);
+         yield call(logoutAPI) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         yield put({
             type: LOG_OUT_SUCCESS,
         });

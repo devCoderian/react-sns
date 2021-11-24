@@ -1,9 +1,9 @@
-import { delay, put, takeLatest, fork, all} from "@redux-saga/core/effects";
+import { delay, put, takeLatest, fork, all} from "redux-saga/effects";
 import axios from "axios";
 import { 
     ADD_POST_FAILURE, ADD_POST_REQUEST, ADD_POST_SUCCESS,
     ADD_COMMENT_FAILURE, ADD_COMMENT_SUCCESS,ADD_COMMENT_REQUEST
-}from '../reducers/post';
+}from '../reducers/_post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME} from '../reducers/user'
 import shortId from "shortid";
 function addPostAPI(data){

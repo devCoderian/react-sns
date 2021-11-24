@@ -15,11 +15,23 @@ const ErrorMessage = styled.div`
 const Signup = () => {
 
     const dispacth = useDispatch();
-    const { signupLoading, signUpDone, signUpError} = useSelector((state) => state.user);
+    const { signupLoading, signUpDone, signUpError,me} = useSelector((state) => state.user);
     
     useEffect(() => {
+        if(me&&me.id){
+            // Router.push('/')
+            Router.replace('/');
+            //홧릴히 나가려면 Router.replace('/');
+            //기록레서 사라짐
+        }
+    }, [me&&me.id]);
+
+    useEffect(() => {
         if(signUpDone){
-            Router.push('/')
+            // Router.push('/')
+            Router.replace('/');
+            //홧릴히 나가려면 Router.replace('/');
+            //기록레서 사라짐
         }
     }, [signUpDone]);
 
@@ -27,7 +39,7 @@ const Signup = () => {
         if(signUpError){
             alert(signUpError);
         }
-    }, [signUpDone])
+    }, [signUpError])
 
 
     const [email, onChangeEmail] = useInput('');

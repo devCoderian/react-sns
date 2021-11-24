@@ -1,9 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcrypt')
-const { User } = require('../models'); 
+const { User, Post } = require('../models'); 
 
 const router = express.Router();
 const passport = require('passport');
+
+//로그인
+
 
 /*
 router.post('/login', passport.authenticate('local',(err, user, info)=>{
@@ -31,7 +34,24 @@ router.post('/login', (req, res, next) =>{
             if(loginErr){
                 return next(loginErr);
             }
-            return res.json(user);
+            //find한번 더 하는 이유 다른 정보 뺴고 붙여서 보내기 위해
+            const fullUserWithoutPassword = await User.findOne({
+                where: { id: user.id },
+                attributes: {
+                  exclude: ['password']
+                },
+                include: [{
+                  model: Post,
+                }, {
+                  model: User,
+                  as: 'Followings',
+                }, {
+                  model: User,
+                  as: 'Followers',
+                }]
+              })
+              console.log(fullUserWithoutPassword)
+              return res.status(200).json(fullUserWithoutPassword);
         })
     })(req, res, next);
 });
@@ -84,6 +104,15 @@ router.post('/', async(req, res, next) =>{  //post  /user
         //서버에러라서 status 500
     }
 });
+
+
+// 로그아웃 라우터
+router.post('/logout', (req, res) =>{
+    req.logout();
+    req.session.destroy();
+    res.send('OK');
+})
+
 // 200 성공
 // 300 리다이렉트
 // 400 클라이언트 에러

@@ -1,19 +1,22 @@
-import 'antd/dist/antd.css'; 
+import React from 'react';
 import PropTypes from 'prop-types';
+import Head from 'next/head';
+import 'antd/dist/antd.css';
 
 import wrapper from '../store/configureStore';
 
-
-const App =({Component}) =>{
-    
-    return(
-        // <Provider></Provider> 6버전 이상부터 생략
-        <Component />
-    )
-}
+const App = ({ Component }) => (
+  <>
+    <Head>
+      <meta charSet="utf-8" />
+      <title>NodeBird</title>
+    </Head>
+    <Component />
+  </>
+);
 
 App.propTypes = {
-    Component: PropTypes.elementType.isRequired,
-}
+  Component: PropTypes.elementType.isRequired,
+};
 
 export default wrapper.withRedux(App);

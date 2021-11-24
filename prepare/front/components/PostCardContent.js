@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Link from 'next/dist/client/link'
+import React from 'react';
+import Link from 'next/link';
+import PropTypes from 'prop-types';
 
 const PostCardContent = ({postData}) => {
     console.log(postData)

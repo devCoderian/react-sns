@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect} from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ padding: 10px
 // const style = useMemo(()=>({marginTop: 10}), []); -> 스타일 컴포넌트 대신 사용 
 
 const LoginForm = () => {
-    const { loginLoading } = useSelector((state) => state.user);
+    const { loginLoading, logInError } = useSelector((state) => state.user);
     //props 필요 없음 redux const LoginForm = ({setIsLoggedIn}) 
     const dispatch = useDispatch(); 
     // const [id, setId] = useState('');
@@ -27,6 +27,15 @@ const LoginForm = () => {
     const [email, onChangeEmail] = useInput('');
     const [password, onChangePassword] = useInput('');
   
+    //loginError 시
+    //back단 에러
+    useEffect(() => {
+        if(logInError)
+        alert(logInError)
+       
+    }, [logInError])
+
+
    //컴포넌트의 함수로 넘겨주는 props는 useCallBack(함수캐싱) 꼭쓰기-> 최적화를 위해
 
     //submit이 완료되면 onFinish 가 호출됨 antd의 onFinish는 자동으로 e.preventDefault가 설정되어 있음

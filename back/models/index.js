@@ -9,11 +9,12 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 
 
 //만든 모델들 불러오기
+db.User = require('./user')(sequelize, Sequelize);
 db.Comment = require('./comment')(sequelize, Sequelize);
 db.Hashtag = require('./hashtag')(sequelize, Sequelize);
 db.Image = require('./image')(sequelize, Sequelize);
 db.Post = require('./post')(sequelize, Sequelize);
-db.User = require('./user')(sequelize, Sequelize);
+
 // require 하면서 함수를 실행하면서 모델이 등록이 됨
 
 //반복문 돌면서 sequelize에서 모델 등록 

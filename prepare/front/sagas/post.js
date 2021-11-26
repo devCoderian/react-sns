@@ -7,7 +7,7 @@ import {
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME} from '../reducers/user'
 import shortId from "shortid";
 function addPostAPI(data){
-    return axios.post('/api/post', data)
+    return axios.post('/post', data)
 }
 
 //사가는 동시에 여러 액션을 디스패치 가능 //어떤 동작이 여러 리듀서에 데이터를 동시에 변경해야 한다면 액션을 여러번 호출
@@ -15,7 +15,7 @@ function* addPost(action){
     try{
          //서버가 없기 때문
         // yield delay(1000)
-        //const result = yield call(addPostAPI,action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
+        const result = yield call(addPostAPI,action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         const id = shortId.generate();
         console.log(id,'id');
         console.log(action,'action');

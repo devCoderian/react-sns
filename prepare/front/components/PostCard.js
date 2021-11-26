@@ -1,17 +1,18 @@
 import React, { useState, useCallback } from 'react';
-import { Card, Button, Avatar, List, Comment, Popover } from 'antd';
+import { Card, Button, Avatar, List, Comment, Popover} from 'antd';
 import PropTypes from 'prop-types';
 import { RetweetOutlined, HeartTwoTone, HeartOutlined, MessageOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Link from 'next/link';
-
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
 import PostImages from './PostImages';
 import FollowButton from './FollowButton';
 import { REMOVE_POST_REQUEST } from '../reducers/post';
-
+const CardWrapper = styled.div`
+  margin-bottom: 20px;
+`;
 const PostCard = ({ post }) => {
     const dispatch = useDispatch();
     const { removePostLoading } = useSelector((state) => state.post);

@@ -36,8 +36,7 @@ import FollowList from '../components/FollowList';
 const Profile = () => {
       // const followerList = [{nickname:'제로초'}, {nickname:'바보'}, {nickname: '노드버드 오피셜'}];
     // const followingList = [{nickname:'제로초'}, {nickname:'바보'}, {nickname: '노드버드 오피셜'}];
-    const { me } = useSelector((state) => state.user)
-  const { me } = useSelector((state) => state.user);
+    const { me } = useSelector((state) => state.user);
   useEffect(() => {
     if (!(me && me.id)) {
       Router.push('/');

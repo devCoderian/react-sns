@@ -3,7 +3,7 @@ import axios from "axios";
 import {
     LOG_IN_REQUEST,LOG_IN_SUCCESS,LOG_IN_FAILURE,
     LOG_OUT_REQUEST,LOG_OUT_SUCCESS,LOG_OUT_FAILURE,
-    SIGN_UP_REQUEST,SIGN_UP_SUCCESS, SIGN_UP_FAILURE
+    SIGN_UP_REQUEST,SIGN_UP_SUCCESS, SIGN_UP_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOAD_USER_FAILURE
  
   } from '../reducers/user';
 function loginAPI(data){
@@ -36,7 +36,7 @@ function* logout(){
     try{
          //서버가 없기 때문
         //yield delay(1000);
-         yield call(logoutAPI) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
+        yield call(logoutAPI) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         yield put({
             type: LOG_OUT_SUCCESS,
         });
@@ -72,6 +72,29 @@ function* signup(action){
     }
 }
 
+
+function loadUserAPI(data){
+    return axios.get('/user')
+}
+
+function* loadUser(action){
+    
+    try{
+         //서버가 없기 때문
+        //yield delay(1000);
+        const result = yield call(loadUserAPI, action.data);
+        //const result = yield call(logoutAPI, action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
+        yield put({
+            type: LOAD_USER_SUCCESS,
+            data: result.data
+        });
+    }catch(err){
+        yield put({
+            type: LOAD_USER_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
 //이벤트 리스너 같은 역할을 한다. 단점 1회용 -> 해결하기 ->while
 function* watchLogin(){
     //while(true){
@@ -90,11 +113,15 @@ function* watchSignup(){
     // yield takeLatest('SIGN_UP_REQUEST', signup);
 }
 
+function* watchLoadUser(){
+    yield takeLatest(LOAD_USER_REQUEST, loadUser)
+}
 
 export default function* userSaga(){
     yield all([
         fork(watchLogin), //call이랑은 다름 
         fork(watchLogout), //fork나 call로 제너레이터 함수를 실행시켜준다. all은 함수를 동시에 실행
-        fork(watchSignup)
+        fork(watchSignup),
+        fork(watchLoadUser),
     ]);
 }

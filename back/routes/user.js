@@ -1,11 +1,48 @@
 const express = require('express');
 const bcrypt = require('bcrypt')
 const { User, Post } = require('../models'); 
+//커스텀 미들웨어 쓰기
+const {isLoggedIn, isNotLoggedIn} = require('./middlewares');
 
 const router = express.Router();
 const passport = require('passport');
 
-//로그인
+//로그인 안풀리게 만들기
+//새로고침할때마다 보이기
+router.get('/', async(req, res, next) =>{
+    try{
+        
+        if(req.user){ //2)사용자가 있을때만으로 오류 해결
+            const fullUserWithoutPassword = await User.findOne({
+                where: { id: req.user.id },
+                attributes: {
+                  exclude: ['password']
+                },
+                include: [{
+                  model: Post,
+                  attributes: ['id']
+                }, {
+                  model: User,
+                  as: 'Followings',
+                  attributes: ['id']
+                }, {
+                  model: User,
+                  as: 'Followers',
+                  attributes: ['id']
+                }]
+              })
+              console.log(fullUserWithoutPassword)
+              return res.status(200).json(fullUserWithoutPassword);
+    }else{
+        res.status(200).json(null);
+    }
+       
+    }catch(error){
+       console.error(error);
+       next(error);
+    }
+
+});
 
 
 /*
@@ -19,7 +56,7 @@ router.post('/login', passport.authenticate('local',(err, user, info)=>{
 }));
 */
  //미들웨어 확장하기 -> express의 기법중 하나임
-router.post('/login', (req, res, next) =>{
+router.post('/login',isNotLoggedIn, (req, res, next) =>{
     passport.authenticate('local',(err, user, info)=>{
         if(err){
             console.error(err);
@@ -42,12 +79,15 @@ router.post('/login', (req, res, next) =>{
                 },
                 include: [{
                   model: Post,
+                  attributes: ['id']
                 }, {
                   model: User,
                   as: 'Followings',
+                  attributes: ['id']
                 }, {
                   model: User,
                   as: 'Followers',
+                  attributes: ['id']
                 }]
               })
               console.log(fullUserWithoutPassword)
@@ -57,7 +97,7 @@ router.post('/login', (req, res, next) =>{
 });
 
 
-router.post('/', async(req, res, next) =>{  //post  /user
+router.post('/', isNotLoggedIn, async(req, res, next) =>{  //post  /user
     //req -> saga -> signUp API 에서 들어온것
     //POST / user /saga에서 siginupApi를 통해 들어온다.
     // 비동기 -> bcrypt -> 비동기처리 -> 숫자가 높으면 암호화 보안이 높아짐 단 속도가 낮아짐
@@ -107,7 +147,7 @@ router.post('/', async(req, res, next) =>{  //post  /user
 
 
 // 로그아웃 라우터
-router.post('/logout', (req, res) =>{
+router.post('/logout', isLoggedIn, (req, res) =>{
     req.logout();
     req.session.destroy();
     res.send('OK');

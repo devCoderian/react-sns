@@ -95,7 +95,7 @@ export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
       case ADD_POST_SUCCESS: {
         return {
           ...state,
-          mainPosts: [dummyPost(action.data), ...state.mainPosts],
+          //mainPosts: [dummyPost(action.data), ...state.mainPosts],//더미
           addPostLoading:false,
           addPostDone:true,
       }

@@ -2,11 +2,10 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { ADD_POST_REQUEST } from '../reducers/post';
+import { addPost, ADD_POST_REQUEST } from '../reducers/post';
 import useInput from '../hooks/useInput';
-
 export const PostForm = () => {
-    const { imagePaths, addPostLoading, addPostDone } = useSelector((state) => state.post);
+    const { imagePaths, addPostLoading, addPostDone} = useSelector((state) => state.post);
     // const [text, setText] = useState('');
     // useInput으로 변경
     const [text, onChangeText, setText] = useInput('');
@@ -27,12 +26,12 @@ export const PostForm = () => {
     // }, []);
   
   const onSubmit = useCallback(() => {
-    dispatch({
-      type: ADD_POST_REQUEST,
-      data: text,
-    });
-    // dispatch(addPost(text));
-    // // setText('') 따로 빼기
+    // dispatch({
+    //   type: ADD_POST_REQUEST,
+    //   data: text,
+    // });
+    dispatch(addPost(text));
+    // // // setText('') 따로 빼기
   }, [text]);
   return (
     <Form style={{ margin: '10px 0 20px' }} encType="multipart/form-data" onFinish={onSubmit}>

@@ -2,6 +2,7 @@
 const express = require('express');
 const postRouter = require('./routes/post')
 const userRouter = require('./routes/user')
+const postsRouter = require('./routes/posts')
 const db = require ('./models'); //index에서 가져오기
 const app = express(); //한번 호출해주어야 한다.
 const cors = require('cors');
@@ -11,6 +12,7 @@ const passport = require('passport');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
+const morgan = require('morgan')
 dotenv.config();
 
 //express에 디비 등록
@@ -51,8 +53,8 @@ app.use(cors({
   }));
 
 
-
-
+//프론트에서 어떤 요청이 들어왔는지 확인해준다.
+app.use(morgan('dev'));
 //use는 express 서버에 무언가를 장착하는 것
 app.use(express.json());  //프론트에서 json형식으로 보냈을 때 json형식의 데이터를 req.body안에 넣어준다.
 app.use(express.urlencoded({ extended : true })) //form submit 했을 때 url.encoded 방식으로 데이터가 넘어온다. 해석해줌
@@ -66,6 +68,7 @@ app.use(session({
 app.use(passport.initialize()); 
 app.use(passport.session());
 
+app.use('/posts', postsRouter); //복수 게시글
 app.use('/post', postRouter);
 app.use('/user', userRouter);
 

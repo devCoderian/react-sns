@@ -154,6 +154,7 @@ const upload = multer({
 //한장이면 싱글
 //json이나 text면 upload.none()
 //파일 인풋 자체가 여러개일때는 upload.fills
+/*
 router.post('/:postId/comment', isLoggedIn,upload.array('image') async(req, res, next) => {
     try {
         const post = await Post.findOne({
@@ -164,6 +165,6 @@ router.post('/:postId/comment', isLoggedIn,upload.array('image') async(req, res,
     }
 })
 
-
+*/
 
 module.exports = router;

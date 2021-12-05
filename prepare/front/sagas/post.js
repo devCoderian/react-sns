@@ -1,4 +1,4 @@
-import { delay, put, takeLatest, fork, all, call} from "redux-saga/effects";
+import { delay,throttle, put, takeLatest, fork, all, call} from "redux-saga/effects";
 import axios from "axios";
 import { ADD_POST_TO_ME, REMOVE_FOLLOWER_FAILURE, REMOVE_POST_OF_ME} from '../reducers/user'
 import shortId from "shortid";
@@ -6,10 +6,16 @@ import { LOAD_POSTS_FAILURE,LOAD_POSTS_SUCCESS,LOAD_POSTS_REQUEST,
     ADD_POST_FAILURE, ADD_POST_REQUEST, ADD_POST_SUCCESS,
     ADD_COMMENT_FAILURE, ADD_COMMENT_SUCCESS,ADD_COMMENT_REQUEST, 
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
-UNLIKE_POST_REQUEST, UNLIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE } from "../reducers/post";
+UNLIKE_POST_REQUEST, UNLIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, 
+REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE,
+LOAD_POST_FAILURE,LOAD_POST_SUCCESS,LOAD_POST_REQUEST,
+UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_REQUEST
+} from "../reducers/post";
+
+
 function addPostAPI(data){
     // return axios.post('/post', data); //d이름을 주어야 한다.
-    return axios.post('/post', {content: data})
+    return axios.post('/post',data)
 }
 
 //사가는 동시에 여러 액션을 디스패치 가능 //어떤 동작이 여러 리듀서에 데이터를 동시에 변경해야 한다면 액션을 여러번 호출
@@ -17,6 +23,7 @@ function* addPost(action){
     try{
          //서버가 없기 때문
         // yield delay(1000)
+        console.log('addpost')
         const result = yield call(addPostAPI,action.data) //실행 //call 은 동기 함수(pai호출할때까지 기다려줌)호출 fork는 비동기 함수(결과 기다리지않고 바로 다음줄) 호출
         //const id = shortId.generate();
         // console.log(result.data)
@@ -43,6 +50,25 @@ function* addPost(action){
 }
 
 
+function uploadImagesAPI(data) {
+    return axios.post('/post/images', data);
+  }
+  
+  function* uploadImages(action) {
+    try {
+      const result = yield call(uploadImagesAPI, action.data);
+      yield put({
+        type: UPLOAD_IMAGES_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.error(err);
+      yield put({
+        type: UPLOAD_IMAGES_FAILURE,
+        error: err.response.data,
+      });
+    }
+  }
 
 function addCommentAPI(data){
     return axios.post(`/post/${data.postId}/comment`, data) //post/1/comment -> 게시글 1번에 댓글 작성
@@ -66,26 +92,45 @@ function* addComment(action){
     }
 }
 
-function loadPostsAPI(data){
-    return axios.get('/posts', data);
-}
-
-function* loadPosts(action){
+function loadPostAPI(data) {
+    return axios.get(`/post/${data}`);
+  }
+  
+  function* loadPost(action) {
     try {
-        const result = yield call(loadPostsAPI, action.data);
-        yield put({
-            type: LOAD_POSTS_SUCCESS,
-            data: result.data,
-        });
-        
-    } catch (error) {
-        yield put({
-            type: LOAD_POSTS_FAILURE,
-            data: error.response.data,
-        });
+      const result = yield call(loadPostAPI, action.data);
+      yield put({
+        type: LOAD_POST_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.error(err);
+      yield put({
+        type: LOAD_POST_FAILURE,
+        data: err.response.data,
+      });
     }
-}
+  }
 
+function loadPostsAPI(lastId) {
+    return axios.get(`/posts?lastId=${lastId || 0}`);
+  }
+  
+  function* loadPosts(action) {
+    try {
+      const result = yield call(loadPostsAPI, action.lastId);
+      yield put({
+        type: LOAD_POSTS_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.error(err);
+      yield put({
+        type: LOAD_POSTS_FAILURE,
+        error: err.response.data,
+      });
+    }
+  }
 function likePostAPI(data){
     return axios.patch(`/post/${data}/like`);
 }
@@ -150,7 +195,7 @@ function* removePost(action){
 
 function* watchLoadPost(){
     
-    yield takeLatest(LOAD_POSTS_REQUEST, loadPosts) //주번 , 백번 잘못 눌러도 마지막것만 //동시에 로딩되는 것 중에서만 프론트에서 그렇게 생각한다. 서버에는 두번 저장된다 응답을 취소하는 것
+    yield takeLatest(LOAD_POST_REQUEST, loadPost) //주번 , 백번 잘못 눌러도 마지막것만 //동시에 로딩되는 것 중에서만 프론트에서 그렇게 생각한다. 서버에는 두번 저장된다 응답을 취소하는 것
     //yield throttle('ADD_POST_REQUEST' , addPost, 10000); //1분동안 한번만 요청! 중복요청 불가
 }
 
@@ -176,6 +221,13 @@ function* watchUnLikePost(){
 function* watchRemovePost(){
     yield takeLatest(REMOVE_POST_REQUEST, removePost)
 }
+
+function* watchUploadImages() {
+    yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+  }
+  function* watchLoadPosts() {
+    yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
+  }
 export default function* postSaga(){
     yield all([
         fork(watchAddPost),
@@ -183,6 +235,8 @@ export default function* postSaga(){
         fork(watchLoadPost),
         fork(watchLikePost),
         fork(watchUnLikePost),
-        fork(watchRemovePost)
+        fork(watchRemovePost),
+        fork(watchUploadImages),
+        fork(watchLoadPosts),
     ]);
 }

@@ -4,8 +4,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 import AppLayout from '../components/AppLayout';
-import { LOAD_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_POSTS_REQUEST} from '../reducers/post';
+import { LOAD_MY_INFO_REQUEST,LOAD_USER_REQUEST} from '../reducers/user';
 import wrapper from '../store/configureStore'
+import axios from 'axios';
+import { END } from 'redux-saga';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -56,14 +59,27 @@ console.log(mainPosts)
 //정보가 바뀌면 getServerSideProps, getStaticProps은 블로그 글 처럼 html로 미리 정적으로 파일을 만들어둘수있는 경우
 //getStaticProps -> next에서 페이지를 html로 만들어줘서 빠르게 제공 서버에는 무리가 덜 가게 , 블로그 글, 이벤트 글 
 //대부분 getServerSideProps
-export const getServerSideProps = wrapper.getServerSideProps((context) => {
-  
-    context.store.dispatch({
-      type: LOAD_USER_REQUEST,
-    });
-    context.store.dispatch({
-      type: LOAD_POSTS_REQUEST,
-    });
 
-})
+
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  console.log('getServerSideProps start');
+  console.log(context.req.headers);
+  //서버에서 실행
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  //내 로그인 쿠키 공유 문제
+  if (context.req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  });
+  context.store.dispatch({
+    type: LOAD_POSTS_REQUEST,
+  });
+  context.store.dispatch(END);
+  console.log('getServerSideProps end');
+  await context.store.sagaTask.toPromise();
+});
+
 export default Home;

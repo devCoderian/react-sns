@@ -24,7 +24,7 @@ const UserProfile = () => {
                 <div key = "followings">팔로워<br />{me.Followers.length}</div>
             ]}>
         <Card.Meta
-            avatar={<Avatar>{me.nickname}</Avatar>}
+            avatar={<Avatar>{me.nickname[0]}</Avatar>}
             title ={me.nickname}
         />
         <Button onClick = {onLogOut} loading = {logoutLoading}>로그아웃</Button>  

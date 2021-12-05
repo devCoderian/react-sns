@@ -3,16 +3,17 @@ const express = require('express');
 const postRouter = require('./routes/post')
 const userRouter = require('./routes/user')
 const postsRouter = require('./routes/posts')
+const hashtagRouter = require('./routes/hashtag')
 const db = require ('./models'); //index에서 가져오기
 const app = express(); //한번 호출해주어야 한다.
 const cors = require('cors');
-
+const path = require('path');
 const passportConfig = require('./passport');
 const passport = require('passport');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
-const morgan = require('morgan')
+const morgan = require('morgan');
 dotenv.config();
 
 //express에 디비 등록
@@ -52,7 +53,7 @@ app.use(cors({
     credentials: true,
   }));
 
-
+app.use('/', express.static(path.join(__dirname, 'uploads')));
 //프론트에서 어떤 요청이 들어왔는지 확인해준다.
 app.use(morgan('dev'));
 //use는 express 서버에 무언가를 장착하는 것
@@ -71,7 +72,7 @@ app.use(passport.session());
 app.use('/posts', postsRouter); //복수 게시글
 app.use('/post', postRouter);
 app.use('/user', userRouter);
-
+app.use('/hashtag', hashtagRouter);
 app.listen(3060, () =>{
     console.log('서버 실행중 ')
 });

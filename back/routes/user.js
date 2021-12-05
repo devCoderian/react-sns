@@ -55,7 +55,7 @@ router.post('/login', passport.authenticate('local',(err, user, info)=>{
 }));
 */
  //미들웨어 확장하기 -> express의 기법중 하나임
-router.post('/login',isNotLoggedIn, (req, res, next) =>{
+router.post('/login', (req, res, next) =>{
     passport.authenticate('local',(err, user, info)=>{
         if(err){
             console.error(err);

@@ -1,5 +1,3 @@
-//특정 사용자에 대한 게시글 보기 다른 사람 담벼락 들어가기
-
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, Card } from 'antd';
@@ -8,8 +6,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import axios from 'axios';
-//load_post_request와 동일 -> 모든글
-//특정 사용자의 글
 import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
 import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST } from '../../reducers/user';
 import PostCard from '../../components/PostCard';
@@ -20,13 +16,13 @@ const User = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
-  const { userInfo, me } = useSelector((state) => state.user);
+  const { mainPosts, hasMorePosts, loadUserPostsLoading } = useSelector((state) => state.post);
+  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
     const onScroll = () => {
       if (window.pageYOffset + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
-        if (hasMorePosts && !loadPostsLoading) {
+        if (hasMorePosts && !loadUserPostsLoading) {
           dispatch({
             type: LOAD_USER_POSTS_REQUEST,
             lastId: mainPosts[mainPosts.length - 1] && mainPosts[mainPosts.length - 1].id,
@@ -39,7 +35,7 @@ const User = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [mainPosts.length, hasMorePosts, id, loadPostsLoading]);
+  }, [mainPosts.length, hasMorePosts, id]);
 
   return (
     <AppLayout>
@@ -56,10 +52,9 @@ const User = () => {
           <meta property="og:url" content={`https://nodebird.com/user/${id}`} />
         </Head>
       )}
-      {userInfo && (userInfo.id !== me?.id)
+      {userInfo
         ? (
           <Card
-            style={{ marginBottom: 20 }}
             actions={[
               <div key="twit">
                 짹짹
@@ -85,9 +80,7 @@ const User = () => {
           </Card>
         )
         : null}
-      {mainPosts.map((c) => (
-        <PostCard key={c.id} post={c} />
-      ))}
+      {mainPosts.map((post) => <PostCard key={post.id} post={post} />)}
     </AppLayout>
   );
 };
@@ -111,6 +104,7 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
   });
   context.store.dispatch(END);
   await context.store.sagaTask.toPromise();
+
 });
 
 export default User;

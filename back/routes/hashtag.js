@@ -5,7 +5,7 @@ const { User, Hashtag, Image, Post } = require('../models');
 
 const router = express.Router();
 
-router.get('/:tag', async (req, res, next) => {
+router.get('/:tag', async (req, res, next) => { //get/hashtag/노드
   try {
     const where = {};
     if (parseInt(req.query.lastId, 10)) { // 초기 로딩이 아닐 때

@@ -9,7 +9,8 @@ import { LOAD_POSTS_FAILURE,LOAD_POSTS_SUCCESS,LOAD_POSTS_REQUEST,
 UNLIKE_POST_REQUEST, UNLIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, 
 REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE,
 LOAD_POST_FAILURE,LOAD_POST_SUCCESS,LOAD_POST_REQUEST,
-UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_REQUEST
+UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_REQUEST, LOAD_USER_POSTS_REQUEST, 
+LOAD_HASHTAG_POSTS_SUCCESS, LOAD_HASHTAG_POSTS_FAILURE, LOAD_HASHTAG_POSTS_REQUEST, LOAD_USER_POSTS_SUCCESS, LOAD_USER_POSTS_FAILURE
 } from "../reducers/post";
 
 
@@ -131,6 +132,7 @@ function loadPostsAPI(lastId) {
       });
     }
   }
+
 function likePostAPI(data){
     return axios.patch(`/post/${data}/like`);
 }
@@ -193,6 +195,50 @@ function* removePost(action){
 }
 
 
+function loadUserPostsAPI(data, lastId) {
+    return axios.get(`/user/${data}/posts?lastId=${lastId || 0}`);
+  }
+  
+  function* loadUserPosts(action) {
+    try {
+      const result = yield call(loadUserPostsAPI, action.data, action.lastId);
+      yield put({
+        type: LOAD_USER_POSTS_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.error(err);
+      yield put({
+        type: LOAD_USER_POSTS_FAILURE,
+        data: err.name,
+      });
+    }
+  }
+
+function loadHashtagPostsAPI(data, lastId) {
+    return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`);
+  }
+  
+  function* loadHashtagPosts(action) {
+    try {
+      const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
+      yield put({
+        type: LOAD_HASHTAG_POSTS_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.error(err);
+      yield put({
+        type: LOAD_HASHTAG_POSTS_FAILURE,
+        data: err.response.data,
+      });
+    }
+  }
+
+
+
+
+
 function* watchLoadPost(){
     
     yield takeLatest(LOAD_POST_REQUEST, loadPost) //주번 , 백번 잘못 눌러도 마지막것만 //동시에 로딩되는 것 중에서만 프론트에서 그렇게 생각한다. 서버에는 두번 저장된다 응답을 취소하는 것
@@ -225,9 +271,15 @@ function* watchRemovePost(){
 function* watchUploadImages() {
     yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
   }
-  function* watchLoadPosts() {
+function* watchLoadPosts() {
     yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
-  }
+}
+function* watchLoadUserPosts() {
+    yield throttle(5000, LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
+function* watchLoadHashtagPosts() {
+    yield throttle(5000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+}
 export default function* postSaga(){
     yield all([
         fork(watchAddPost),
@@ -238,5 +290,7 @@ export default function* postSaga(){
         fork(watchRemovePost),
         fork(watchUploadImages),
         fork(watchLoadPosts),
+        fork(watchLoadUserPosts),
+        fork(watchLoadHashtagPosts)
     ]);
 }

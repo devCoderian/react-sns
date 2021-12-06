@@ -14,6 +14,9 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
 const morgan = require('morgan');
+const hpp = require('hpp');
+const helmet = require('helmet');
+
 dotenv.config();
 
 //express에 디비 등록
@@ -55,7 +58,17 @@ app.use(cors({
 
 app.use('/', express.static(path.join(__dirname, 'uploads')));
 //프론트에서 어떤 요청이 들어왔는지 확인해준다.
-app.use(morgan('dev'));
+
+if(process.env.NODE_ENV === 'production'){
+    app.use(morgan('combined'));
+    app.use(hpp());
+    app.use(halmet());
+}else{
+    app.use(morgan('dev'));
+}
+
+
+
 //use는 express 서버에 무언가를 장착하는 것
 app.use(express.json());  //프론트에서 json형식으로 보냈을 때 json형식의 데이터를 req.body안에 넣어준다.
 app.use(express.urlencoded({ extended : true })) //form submit 했을 때 url.encoded 방식으로 데이터가 넘어온다. 해석해줌

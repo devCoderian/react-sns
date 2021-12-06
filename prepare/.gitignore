@@ -1,0 +1,5 @@
+/front/node_modules
+/front/.next
+/react-sns.pem
+/back/node_modules
+/back/.env

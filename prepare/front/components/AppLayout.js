@@ -1,5 +1,5 @@
 //메뉴 기능 
-import React, {useState} from 'react'
+import React, {useCallback, useState} from 'react'
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Input, Menu, Row, Col } from 'antd';
@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import UserProfile from './UserProfile';
 import { useSelector } from 'react-redux';
 import { createGlobalStyle } from 'styled-components';
+import useInput from '../hooks/useInput';
+import Router from 'next/router';
 
 const SerachInput = styled(Input.Search)`
     vertical-align: middle;
@@ -30,7 +32,14 @@ const Global = createGlobalStyle`
 
 const AppLayout = ({children}) => {
     // const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [searchInput, onChangeSearchInput] = useInput('');
     const {me}  =  useSelector((state) => state.user);
+
+
+    const onSearch =useCallback(() => {
+            Router.push(`/hashtag/${searchInput}`);
+        },[searchInput])
+
     return (
         <div>
             <Menu mode = "horizontal">
@@ -41,7 +50,11 @@ const AppLayout = ({children}) => {
                     <Link href = "/profile"><a>프로필</a></Link>
                 </Menu.Item>
                 <Menu.Item>
-                    <Input.Search enterButton style={{ verticalAlign:'middle'}} />
+                    <Input.Search 
+                        enterButton
+                        value = {searchInput}
+                        onChange = {onChangeSearchInput}
+                        onSearch = {onSearch} />
                     {/* <Input.Search enterButton style={{ verticalAlign:'middle'}} /> */}
                 </Menu.Item>
                 <Menu.Item>

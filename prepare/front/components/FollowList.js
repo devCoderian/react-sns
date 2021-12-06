@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { List, Button, Card } from 'antd';
 import { StopOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
-
+//useSWRInfinite -> 페이지네이션
 import { UNFOLLOW_REQUEST, REMOVE_FOLLOWER_REQUEST } from '../reducers/user';
 
 const FollowList = ({ header, data, onClickMore, loading }) => {

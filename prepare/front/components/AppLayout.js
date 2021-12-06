@@ -37,6 +37,7 @@ const AppLayout = ({children}) => {
 
 
     const onSearch =useCallback(() => {
+        //동적 라우팅 푸쉬
             Router.push(`/hashtag/${searchInput}`);
         },[searchInput])
 

@@ -14,6 +14,7 @@ import PostCardContent from './PostCardContent';
 import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
+//모멘트 언어 한글 defalut -> 영어
 moment.locale('ko');
 
 const PostCard = ({ post }) => {

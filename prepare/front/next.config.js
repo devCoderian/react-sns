@@ -7,10 +7,10 @@ module.exports = withBundleAnalyzer({
     compress: true, //CompressPlugin 대체
     webpack(config, { webpack }){
         const prod = process.env.NODE_ENV === 'production';
-        // const plugins = [
-        //     ...config.plugins,
-        //     new webpack.ContextReplacementPlugin(/moment[/\\]locale$/,/^\.\/ko$/),
-        // ];
+        const plugins = [
+            ...config.plugins,
+            new webpack.ContextReplacementPlugin(/moment[/\\]locale$/,/^\.\/ko$/),
+        ];
         // if(prod){
         //     plugins.push(new CompressPlugin()); 
         // }
@@ -18,10 +18,7 @@ module.exports = withBundleAnalyzer({
             ...config,
             mode: prod ? 'production': 'development', 
             devtool: prod ? 'hidden-source-map': 'eval',
-            plugins = [
-                ...config.plugins,
-                new webpack.ContextReplacementPlugin(/moment[/\\]locale$/,/^\.\/ko$/),
-            ]
+            plugins,
         }
     }
 });

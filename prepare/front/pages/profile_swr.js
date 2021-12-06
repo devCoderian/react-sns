@@ -12,6 +12,7 @@ import wrapper from '../store/configureStore';
 import axios from 'axios';
 import { END } from 'redux-saga';
 import useSWR from 'swr';
+import { backUrl } from '../config/config';
 //swr
 const fetcher = (url) => axios.get(url, {})
 
@@ -23,8 +24,8 @@ const Profile = () => {
   const [followersLimit, setFollowersLimit] = useState(3);
   const [followingsLimit, setFollowingsLimit] = useState(3);
   //data, error 둘다 없으면 로딩중 둘중하나면 성공했거나 실패했거나
-  const { data:followersData , error:followerError } = useSWR(`http://localhost:3060/user/followers?limit=${followersLimit}`, fetcher);
-  const { data: followingsData, error:followingError } = useSWR(`http://localhost:3060/user/followings?limit=${followingsLimit}`, fetcher)
+  const { data:followersData , error:followerError } = useSWR(`${backUrl}/user/followers?limit=${followersLimit}`, fetcher);
+  const { data: followingsData, error:followingError } = useSWR(`${backUrl}/user/followings?limit=${followingsLimit}`, fetcher)
    //swr전
   /*useEffect(() => {
     dispatch({

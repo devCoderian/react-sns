@@ -4,7 +4,8 @@ import userSaga from './user';
 
 
 import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:3060';
+// axios.defaults.baseURL = 'http://localhost:3060';
+axios.defaults.baseURL = 'http://3.36.64.46/';
 axios.defaults.withCredentials = true;
 export default function* rootSaga(){
     yield all([

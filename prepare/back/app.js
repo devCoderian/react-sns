@@ -52,7 +52,8 @@ passportConfig();
 // }));
 //브라우저에서 벡엔드로 직접 요청 날릴떄 cors로 다 허용해버리면 위험하니까(보안)
 app.use(cors({
-    origin: ['http://localhost:3100', 'reactsns.com', 'http://13.125.234.46/'],
+    // origin: ['http://localhost:3100', 'reactsns.com', 'http://13.125.234.46/'],
+    origin: ['http://localhost:3100', 'reactsnspf.p-e.kr'],
     credentials: true,
   }));
 
@@ -77,7 +78,12 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     saveInitialized: false,
 	resave: false,
-	secret: process.env.COOKIE_SECRET
+	secret: process.env.COOKIE_SECRET, 
+    cookie: {
+        httpOnly: true,
+        secure: false,
+        domain: process.env.NODE_ENV === 'production' && '.nodebird.com'
+    }
 }));
 app.use(passport.initialize()); 
 app.use(passport.session());
@@ -86,7 +92,7 @@ app.use('/posts', postsRouter); //복수 게시글
 app.use('/post', postRouter);
 app.use('/user', userRouter);
 app.use('/hashtag', hashtagRouter);
-app.listen(3060, () =>{
+app.listen(80, () =>{
     console.log('서버 실행중 ')
 });
 

@@ -51,23 +51,38 @@ passportConfig();
 //     origin: 'https://nodebird.com' //진짜 주소만 허용하겠다. 
 // }));
 //브라우저에서 벡엔드로 직접 요청 날릴떄 cors로 다 허용해버리면 위험하니까(보안)
-app.use(cors({
-    // origin: ['http://localhost:3100', 'reactsns.com', 'http://13.125.234.46/'],
-    origin: ['http://localhost:3100', 'http://www.reactsnspf.p-e.kr'],
-    credentials: true,
-  }));
+// app.use(cors({
+//     // origin: ['http://localhost:3100', 'reactsns.com', 'http://13.125.234.46/'],
+//     origin: ['http://localhost:3100', 'http://www.reactsnspf.p-e.kr'],
+//     credentials: true,
+//   }));
 
 app.use('/', express.static(path.join(__dirname, 'uploads')));
 //프론트에서 어떤 요청이 들어왔는지 확인해준다.
 
-if(process.env.NODE_ENV === 'production'){
+// if(process.env.NODE_ENV === 'production'){
+//     app.use(morgan('combined'));
+//     app.use(hpp());
+//     app.use(halmet());
+// }else{
+//     app.use(morgan('dev'));
+// }
+//배포시
+if (process.env.NODE_ENV === 'production') {
     app.use(morgan('combined'));
     app.use(hpp());
-    app.use(halmet());
-}else{
+    app.use(helmet({ contentSecurityPolicy: false }));
+    app.use(cors({
+      origin: 'http://www.reactsnspf.p-e.kr',
+      credentials: true,
+    }));
+  } else {
     app.use(morgan('dev'));
-}
-
+    app.use(cors({
+      origin: true,
+      credentials: true,
+    }));
+  }
 
 
 //use는 express 서버에 무언가를 장착하는 것

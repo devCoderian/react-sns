@@ -53,7 +53,7 @@ passportConfig();
 //브라우저에서 벡엔드로 직접 요청 날릴떄 cors로 다 허용해버리면 위험하니까(보안)
 app.use(cors({
     // origin: ['http://localhost:3100', 'reactsns.com', 'http://13.125.234.46/'],
-    origin: ['http://localhost:3100', 'http://reactsnspf.p-e.kr'],
+    origin: ['http://localhost:3100', 'http://www.reactsnspf.p-e.kr'],
     credentials: true,
   }));
 
